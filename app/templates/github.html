@@ -1,0 +1,151 @@
+{% extends 'base.jinja' %}
+
+{% block styles %}
+<style>
+  .datos {
+    background-color: burlywood;
+    opacity: 0.8;
+    border-radius: 2rem;
+    color: brown;
+  }
+  .datos span {
+    font-weight: bold;
+  }
+</style>
+{% endblock %}
+
+{% block main %}
+  <div class="container">
+    <h3 class="text-center">Batalla de Github</h3>
+
+    <div  class="d-flex flex-wrap justify-content-around">
+      <div class="col-5 mx-auto border p-4 my-4 text-light bg-dark">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Nombre 1</label>
+          <input id="user1" name="name" type="text" class="form-control" aria-describedby="emailHelp" required>
+        </div>
+        <button class="btn btn-primary" onclick="buscar1()">Buscar</button>
+        <div class="mb-3 datos p-4">
+          <h4 class="text-center">Datos</h4>
+          <ul>
+            <li>
+              Repos: <span id="public_repos1"></span>
+            </li>
+            <li>
+              Gists: <span id="public_gists1"></span>
+            </li>
+            <li>
+              Siguiendo: <span id="following1"></span>
+            </li>
+            <li>
+              Seguidores: <span id="followers1"></span>
+            </li>
+          </ul>
+          <h5>Puntaje Total: <span id="total1"></span></h5>
+        </div>
+      </div>
+
+      <div class="col-5 mx-auto border p-4 my-4 text-light bg-dark">
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Nombre 1</label>
+          <input id="user2" name="name" type="text" class="form-control" aria-describedby="emailHelp" required>
+        </div>
+        <button class="btn btn-primary" onclick="buscar2()">Buscar</button>
+        <div class="mb-3 datos p-4">
+          <h4 class="text-center">Datos</h4>
+          <ul>
+            <li>
+              Repos: <span id="public_repos2"></span>
+            </li>
+            <li>
+              Gists: <span id="public_gists2"></span>
+            </li>
+            <li>
+              Siguiendo: <span id="following2"></span>
+            </li>
+            <li>
+              Seguidores: <span id="followers2"></span>
+            </li>
+          </ul>
+          <h5>Puntaje Total: <span id="total2"></span></h5>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    async function buscar1() {
+      // 1. Obtengo el valor del input
+      const input1 = document.querySelector('#user1');
+      const user1 = input1.value.trim()
+
+      // 2. Si el input no tiene nada de texto, entonces no hago nada
+      if (user1 == '') {
+        return
+      }
+
+      // 3. Vamos a buscar los datos de ese usuario
+      const respuesta = await fetch('https://api.github.com/users/' + user1)
+    
+      // 4. Desempaquetamos la respuesta
+      const datos = await respuesta.json()
+
+      // 5. Llenamos el DOM con la información que recuperamos de la llamada AJAX
+      const public_repos1 = document.querySelector('#public_repos1')
+      public_repos1.innerHTML = datos['public_repos']
+
+      const public_gists1 = document.querySelector('#public_gists1')
+      public_gists1.innerHTML = datos['public_gists']
+
+      const followers1 = document.querySelector('#followers1')
+      followers1.innerHTML = datos['followers']
+
+      const following1 = document.querySelector('#following1')
+      following1.innerHTML = datos['following']
+
+      const total = datos.public_repos + datos.public_gists + datos.followers + datos.following
+      document.querySelector('#total1').innerHTML = total
+
+      console.log(datos)
+    }
+
+    async function buscar2() {
+      // 1. Obtengo el valor del input
+      const input2 = document.querySelector('#user2');
+      const user2 = input2.value.trim()
+
+      // 2. Si el input no tiene nada de texto, entonces no hago nada
+      if (user2 == '') {
+        return
+      }
+
+      // 3. Vamos a buscar los datos de ese usuario
+      const respuesta = await fetch('https://api.github.com/users/' + user2)
+    
+      // 4. Desempaquetamos la respuesta
+      const datos = await respuesta.json()
+
+      // 5. Llenamos el DOM con la información que recuperamos de la llamada AJAX
+      const public_repos2 = document.querySelector('#public_repos2')
+      public_repos2.innerHTML = datos['public_repos']
+
+      const public_gists2 = document.querySelector('#public_gists2')
+      public_gists2.innerHTML = datos['public_gists']
+
+      const followers2 = document.querySelector('#followers2')
+      followers2.innerHTML = datos['followers']
+
+      const following2 = document.querySelector('#following2')
+      following2.innerHTML = datos['following']
+
+      const total = datos.public_repos + datos.public_gists + datos.followers + datos.following
+      document.querySelector('#total2').innerHTML = total
+
+      console.log(datos)
+    }
+  </script>
+{% endblock %}

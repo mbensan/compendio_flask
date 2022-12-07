@@ -2,8 +2,10 @@ from app import app
 
 # registramos los controladores de la app
 from app.controllers.auth import auth
+from app.controllers.pages import pages
 
 app.register_blueprint(auth)
+app.register_blueprint(pages)
 '''
 from app.controllers.azar import azar
 from app.controllers.twitter import twitter

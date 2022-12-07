@@ -20,16 +20,13 @@
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="/">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/dojos">Dojos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/ninjas">Ninjas</a>
-          </li>
           {% if session.user %}
-          <li class="nav-item">
-            <a class="nav-link" href="/changepwd">Actualizar Password</a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/changepwd">Actualizar Password</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/github">Usuarios Github</a>
+            </li>
           {% endif %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
