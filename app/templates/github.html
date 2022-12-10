@@ -11,6 +11,7 @@
   .datos span {
     font-weight: bold;
   }
+
 </style>
 {% endblock %}
 
@@ -43,32 +44,24 @@
           </ul>
           <h5>Puntaje Total: <span id="total1"></span></h5>
         </div>
+        <button id="btn-guardar" onclick="guardar()" class="btn btn-success" disabled>Guardar</button>
       </div>
 
       <div class="col-5 mx-auto border p-4 my-4 text-light bg-dark">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Nombre 1</label>
-          <input id="user2" name="name" type="text" class="form-control" aria-describedby="emailHelp" required>
-        </div>
-        <button class="btn btn-primary" onclick="buscar2()">Buscar</button>
-        <div class="mb-3 datos p-4">
-          <h4 class="text-center">Datos</h4>
-          <ul>
-            <li>
-              Repos: <span id="public_repos2"></span>
-            </li>
-            <li>
-              Gists: <span id="public_gists2"></span>
-            </li>
-            <li>
-              Siguiendo: <span id="following2"></span>
-            </li>
-            <li>
-              Seguidores: <span id="followers2"></span>
-            </li>
-          </ul>
-          <h5>Puntaje Total: <span id="total2"></span></h5>
-        </div>
+        <h3 class="text-center">Perfiles GH Guardados</h3>
+        <table class="table text-white">
+          <thead>
+            <tr>
+              <th scope="col">Login</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Ptje Total</th>
+              <th scope="col">Categoría</th>
+            </tr>
+          </thead>
+          <tbody id="profiles">
+            
+          </tbody>
+        </table>
       </div>
 
 
@@ -78,6 +71,50 @@
 
 {% block javascript %}
   <script>
+    // acá guardamos al usuario buscado, porsi tenemos que guardarlo  
+    let buscado = {}
+
+    async function guardar() {
+      
+      var data = new FormData();
+      data.append("login", buscado.login );
+      data.append("name", buscado.name );
+      data.append("followers", buscado.followers );
+      data.append("following", buscado.following );
+      data.append("public_repos", buscado.public_repos );
+      data.append("public_gists", buscado.public_gists );
+      data.append("total", buscado.total );
+      
+      const respuesta = await fetch('/ajax/github', {
+        method: 'POST',
+        body: data
+      })
+
+      const datos = await respuesta.json()
+
+      addProfileTable(datos.id, buscado)
+
+      buscado = {};
+
+      const input1 = document.querySelector('#user1');
+      user1.value = ''
+
+      const btn_guardar = document.querySelector('#btn-guardar')
+      btn_guardar.setAttribute('disabled', 'disabled')
+    }
+
+    function addProfileTable(id, user) {
+      const profiles = document.querySelector('#profiles')
+      profiles.innerHTML += `
+        <tr>
+          <th scope="row" id="${id}">${user.login}</th>
+          <td>${user.name}</td>
+          <td>${user.total}</td>
+          <td>Indefinida</td>
+        </tr>
+      `
+    }
+
     async function buscar1() {
       // 1. Obtengo el valor del input
       const input1 = document.querySelector('#user1');
@@ -111,41 +148,32 @@
       document.querySelector('#total1').innerHTML = total
 
       console.log(datos)
-    }
-
-    async function buscar2() {
-      // 1. Obtengo el valor del input
-      const input2 = document.querySelector('#user2');
-      const user2 = input2.value.trim()
-
-      // 2. Si el input no tiene nada de texto, entonces no hago nada
-      if (user2 == '') {
-        return
+      // 6. Guardamos parcialmente el usuario buscado, en una variable
+      buscado = {
+        'login': datos['login'],
+        'public_repos': datos['public_repos'],
+        'public_gists': datos['public_gists'],
+        'name': datos['name'],
+        'followers': datos['followers'],
+        'following': datos['following'],
+        'total': datos.public_repos + datos.public_gists + datos.followers + datos.following
       }
 
-      // 3. Vamos a buscar los datos de ese usuario
-      const respuesta = await fetch('https://api.github.com/users/' + user2)
-    
-      // 4. Desempaquetamos la respuesta
-      const datos = await respuesta.json()
-
-      // 5. Llenamos el DOM con la información que recuperamos de la llamada AJAX
-      const public_repos2 = document.querySelector('#public_repos2')
-      public_repos2.innerHTML = datos['public_repos']
-
-      const public_gists2 = document.querySelector('#public_gists2')
-      public_gists2.innerHTML = datos['public_gists']
-
-      const followers2 = document.querySelector('#followers2')
-      followers2.innerHTML = datos['followers']
-
-      const following2 = document.querySelector('#following2')
-      following2.innerHTML = datos['following']
-
-      const total = datos.public_repos + datos.public_gists + datos.followers + datos.following
-      document.querySelector('#total2').innerHTML = total
-
-      console.log(datos)
+      // 7. Habilitamos el botón de guardar
+      const btn_guardar = document.querySelector('#btn-guardar')
+      btn_guardar.removeAttribute('disabled')
     }
+  
+    // carga inicial de perfiles ya guardados
+    async function cargar() {
+      const respuesta = await fetch('/ajax/github')
+      const profiles = await respuesta.json()
+
+      console.log(profiles)
+      for (profile of profiles) {
+        addProfileTable(profile.id, profile)
+      }
+    }
+    cargar()
   </script>
 {% endblock %}
