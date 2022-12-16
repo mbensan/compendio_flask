@@ -105,12 +105,23 @@
 
     function addProfileTable(id, user) {
       const profiles = document.querySelector('#profiles')
+      let categoria = 'Principiante'
+      if (user.total > 20) {
+        categoria = 'Experto/a'
+      } else if (user.total > 10) {
+        categoria = 'Avanzado'
+      }
+
+      if (user.login == 'mbensan') {
+        categoria = 'Dios'
+      }
+
       profiles.innerHTML += `
         <tr>
           <th scope="row" id="${id}">${user.login}</th>
           <td>${user.name}</td>
           <td>${user.total}</td>
-          <td>Indefinida</td>
+          <td>${categoria}</td>
         </tr>
       `
     }
