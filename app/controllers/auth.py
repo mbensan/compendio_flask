@@ -85,3 +85,18 @@ def post_change_pass():
 def logout():
     session['user'] = None
     return redirect('/auth')
+
+@auth.route('/auth/avatar')
+def avatar():
+    return render_template('avatar.html')
+
+@auth.route('/auth/changeavatar', methods=['POST'])
+def changeavatar():
+    file = request.files['file']
+    file.save('app/static/avatares/' + file.filename)
+    User.set_avatar(
+        session['user']['email'],
+        file.filename
+    )
+    #import pdb; pdb.set_trace()
+    return redirect('/')

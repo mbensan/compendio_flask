@@ -111,6 +111,23 @@ class User:
         # 4. Le doy feedback al usuario
         flash('Contraseña actualizada con éxito', 'success')
 
+    @classmethod
+    def set_avatar(cls, email, filename):
+        
+        # 3. Actualizo la contraseña
+        query = '''update users set avatar=%(avatar)s  where email=%(email)s'''
+
+        data = {
+            'email': email,
+            'avatar': filename
+        }
+        
+        # asegúrate de llamar a la función connectToMySQL con el esquema al que te diriges
+        connectToMySQL().query_db(query, data)
+    
+        # 4. Le doy feedback al usuario
+        flash('Imagen subida con éxito', 'success')
+
     
     # ahora usamos métodos de clase para consultar nuestra base de datos
     @classmethod

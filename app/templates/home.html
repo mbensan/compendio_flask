@@ -17,3 +17,27 @@
     </div>
   </div>
 {% endblock %}
+
+{% block javascript %}
+  <script>
+    const original_title = document.title
+    let intervalo;
+
+    document.addEventListener('visibilitychange', function (event) {
+      if (document.hidden) {
+        intervalo = setInterval(
+          function() {
+            if (document.title == 'Vuelve ...') {
+              document.title = 'Te extrañamos'
+            } else {
+              document.title = 'Vuelve ...'
+            }
+          }, 1000
+        )
+      } else {
+        clearInterval(intervalo)
+        document.title = original_title
+      }
+    });
+  </script>
+{% endblock %}
