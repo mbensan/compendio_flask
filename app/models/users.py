@@ -10,7 +10,9 @@ create table if not exists users  (
     name varchar(100) not null,
     email varchar(255) not null unique,
     password varchar(255) not null,
-    avatar text
+    avatar text,
+    federate_id int default null,
+    federate_type varchar(50) default 'None'
 )
 '''
 connectToMySQL().query_db(create_table)
